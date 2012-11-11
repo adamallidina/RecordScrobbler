@@ -23,7 +23,6 @@ class session(object):
     self.apiKey      = "021ab74b3f5405138a23c42b8ff1c746"
     self.predicate   = "http://ws.audioscrobbler.com/2.0/?method="
     self.token       = self.get_token()
-    self.signature   = self.get_signature("auth.getSession")
     self.session_key = None
 
   def get_token(self):
@@ -42,13 +41,12 @@ class session(object):
     token     = json['token']
     return token
 
-  def get_signature(self, method):
+  def get_signature(self, tosort):
     """
     The get_signature method is used to generate the md5 version of the
     application signature; which is used to sign all last.fm api requests.
 
-    Parameters: a string containing the name of the last.fm api request 
-                which will be signed
+    Parameters: a dictionary of all keys and values to be put into the string
        Returns: a string containing the md5 hexadecimal hash of our signature
                 string; this is what we sign requests with
     """
@@ -56,10 +54,15 @@ class session(object):
     parser  = SafeConfigParser()
     parser.read('config.txt')
     secret  = parser.get('secret', 'key')
-    # The string that needs to be hashed, as specified by last.fm docs
-    tohash  = "api_key" + self.apiKey + "method" + method
-    tohash  = tohash + "token" + self.token + secret
-    print tohash
+    # Produce string that needs to be hashed, as specified by last.fm docs
+    # That is, we need to alphabetize all the string parameters first
+    list = tosort.items()
+    list.sort()
+    tohash = ""
+    while list != []:
+      tup    = list.pop(0)
+      tohash = tohash + tup[0] + tup[1]
+    tohash  = tohash + secret
     hashobj = hashlib.md5(tohash)
     return hashobj.hexdigest()
 
@@ -84,14 +87,17 @@ class session(object):
        Returns: none
     """
     self.web_auth()
+    sig_dict = {'api_key': self.apiKey, 'method': 'auth.getSession', 'token': self.token}
+    signature = self.get_signature(sig_dict)
     # Now we need to grab a session key
     call     = self.predicate + "auth.getSession&api_key=" + self.apiKey
-    call     = call + "&token=" + self.token + "&api_sig=" + self.signature
+    call     = call + "&token=" + self.token + "&api_sig=" + signature
     call     = call + "&format=json"
     response = requests.get(call)
     json     = response.json
     session_key      = json['session']['key']
     self.session_key = session_key
+    print self.session_key
 
   def save_data(self):
     """
@@ -124,18 +130,24 @@ class session(object):
                 a string, name of the track being scrobbled
        Returns: none
     """
-    root    = "http://ws.audioscrobbler.com/2.0/"
-    sig     = self.get_signature("track.scrobble")
-    payload = {'method': 'track.scrobble', 'artist': artist, 'track': track,
-               'timestamp': int(time.time()), 'api_key': self.apiKey,
-               'api_sig': sig, 'sk': self.session_key}
+    # Setup all the required info
+    root          = "http://ws.audioscrobbler.com/2.0/"
+    timestamp     = int(time.time())
+    str_timestamp = str(timestamp)
+    sig_dict      = {'api_key': self.apiKey, 'method': 'track.scrobble',
+                     'artist': artist, 'track': track,
+                     'timestamp': str_timestamp, 'sk': self.session_key}
+    sig           = self.get_signature(sig_dict)
+    # Contents of the POST request to last.fm
+    payload  = {'method': 'track.scrobble', 'artist': artist, 'track': track,
+                'timestamp': timestamp, 'api_key': self.apiKey,
+                'api_sig': sig, 'sk': self.session_key}
+    # Away we go!
     r = requests.post(root, data=payload)
-    print r.text
 
 def test():
   test_session = session()
-  test_session.get_data()
+  test_session.auth()
+  test_session.save_data()
   test_session.scrobble("M83", "Midnight City")
-
-test()
 
