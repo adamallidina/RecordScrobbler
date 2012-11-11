@@ -62,6 +62,19 @@ class session(object):
     hashobj = hashlib.md5(tohash)
     return hashobj.hexdigest()
 
+  def web_auth(self):
+    """
+    The web_auth method simply opens the users web browser to the last.fm
+    permissions page. Will be made much more robust after basic all basic
+    functionaliy is implemented
+    Parameters: none
+       Returns: none
+    """
+    url = "http://www.last.fm/api/auth/?api_key="
+    webbrowser.open(url + self.apiKey + "&token=" + self.token)
+    time.sleep(10)
+
+
   def auth(self):
     """
     The auth method is called in order to authenticate a session with a user
@@ -70,10 +83,7 @@ class session(object):
     Parameters: none
        Returns: none
     """
-    # Open up users default web browser to last.fm authentication page
-    url = "http://www.last.fm/api/auth/?api_key="
-    webbrowser.open(url + self.apiKey + "&token=" + self.token)
-    time.sleep(10)
+    self.web_auth()
     # Now we need to grab a session key
     call     = self.predicate + "auth.getSession&api_key=" + self.apiKey
     call     = call + "&token=" + self.token + "&api_sig=" + self.signature
