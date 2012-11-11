@@ -5,7 +5,7 @@
 #
 ###############################################################################
 
-import requests, webbrowser, hashlib, time
+import requests, webbrowser, hashlib, time, shelve
 from ConfigParser import SafeConfigParser
 
 class session(object):
@@ -74,7 +74,6 @@ class session(object):
     webbrowser.open(url + self.apiKey + "&token=" + self.token)
     time.sleep(10)
 
-
   def auth(self):
     """
     The auth method is called in order to authenticate a session with a user
@@ -93,7 +92,29 @@ class session(object):
     session_key      = json['session']['key']
     self.session_key = session_key
 
+  def save_data(self):
+    """
+    The save_data method stores all the information needed to make last.fm api
+    calls without reauthenticating every time. 
+    Parameters: none
+       Returns: none
+    """
+    storage = shelve.open('data')
+    # All we need to store is the session key
+    storage['0'] = self.session_key
+
+  def get_data(self):
+    """
+    The get_data method will retrieve the data stored by shelf and set our
+    class instance self.session_key to what has been stored. To be used
+    after auth() has been run sucessfully at least once
+    """
+    storage          = shelve.open('data')
+    self.session_key = storage['0']
+
 def test():
   test_session = session()
-  test_session.auth()
+  print test_session.session_key
+  test_session.get_data()
+  print test_session.session_key
 
