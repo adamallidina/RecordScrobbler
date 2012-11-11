@@ -102,6 +102,7 @@ class session(object):
     storage = shelve.open('data')
     # All we need to store is the session key
     storage['0'] = self.session_key
+    storage.close()
 
   def get_data(self):
     """
@@ -111,6 +112,7 @@ class session(object):
     """
     storage          = shelve.open('data')
     self.session_key = storage['0']
+    storage.close()
 
 def test():
   test_session = session()
