@@ -17,12 +17,13 @@ class session(object):
 
   def __init__(self):
     self.apiKey    = "021ab74b3f5405138a23c42b8ff1c746"
-    self.predicate = "http://ws.audioscrobbler.com/2.0/?method=auth.gettoken"
+    self.predicate = "http://ws.audioscrobbler.com/2.0/?method="
     self.token     = self.gettoken()
     self.signature = self.getsignature()
 
   def gettoken(self):
-    url       = self.predicate + "&api_key=" + self.apiKey + "&format=json"
+    url       = self.predicate + "auth.gettoken&api_key="
+    url       = url + self.apiKey + "&format=json"
     response  = requests.get(url)
     json      = response.json
     token     = json['token']
@@ -39,8 +40,14 @@ class session(object):
     return hashobj.hexdigest()
 
   def auth(self):
-    predicate = "http://www.last.fm/api/auth/?api_key="
     # Open up users default web browser to last.fm authentication page
-    webbrowser.open(predicate + self.apiKey + "&token=" + self.token)
+    url = "http://www.last.fm/api/auth/?api_key="
+    webbrowser.open(url + self.apiKey + "&token=" + self.token)
     # Now we need to grab a session key
+    url2 = self.predicate + "auth.getSession&api_key=" + self.apiKey + "&token=" + self.token + "&api_sig=" + self.signature + "&format=json"
+    response = requests.get(url2)
+    json = response.json
+    print json
 
+test = session()
+test.auth()
