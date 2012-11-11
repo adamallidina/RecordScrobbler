@@ -20,10 +20,11 @@ class session(object):
     The __init__ method sets all required variables for authentication and
     requests to the last.fm api
     """
-    self.apiKey    = "021ab74b3f5405138a23c42b8ff1c746"
-    self.predicate = "http://ws.audioscrobbler.com/2.0/?method="
-    self.token     = self.get_token()
-    self.signature = self.get_signature("auth.getSession")
+    self.apiKey      = "021ab74b3f5405138a23c42b8ff1c746"
+    self.predicate   = "http://ws.audioscrobbler.com/2.0/?method="
+    self.token       = self.get_token()
+    self.signature   = self.get_signature("auth.getSession")
+    self.session_key = None
 
   def get_token(self):
     """
@@ -64,8 +65,10 @@ class session(object):
   def auth(self):
     """
     The auth method is called in order to authenticate a session with a user
+    Sets self.session_key to a session key obtained from last.fm after
+    the user gives the app permission
     Parameters: none
-       Returns: // to do
+       Returns: none
     """
     # Open up users default web browser to last.fm authentication page
     url = "http://www.last.fm/api/auth/?api_key="
@@ -77,8 +80,8 @@ class session(object):
     call     = call + "&format=json"
     response = requests.get(call)
     json     = response.json
-    session_key = json['session']['key']
-    print session_key
+    session_key      = json['session']['key']
+    self.session_key = session_key
 
 def test():
   test_session = session()
