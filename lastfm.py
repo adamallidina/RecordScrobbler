@@ -19,7 +19,7 @@ class session(object):
     self.apiKey    = "021ab74b3f5405138a23c42b8ff1c746"
     self.predicate = "http://ws.audioscrobbler.com/2.0/?method="
     self.token     = self.gettoken()
-    self.signature = self.getsignature()
+    self.signature = self.getsignature("auth.getSession")
 
   def gettoken(self):
     url       = self.predicate + "auth.gettoken&api_key="
@@ -27,15 +27,16 @@ class session(object):
     response  = requests.get(url)
     json      = response.json
     token     = json['token']
+    print json
     return token
 
-  def getsignature(self):
+  def getsignature(self, method):
     # Get secret key from config file
     parser  = SafeConfigParser()
     parser.read('config.txt')
     secret  = parser.get('secret', 'key')
     # The string that needs to be hashed, as specified by last.fm docs
-    tohash  = "api_key" + self.apiKey + "methodauth.getSessiontoken" + secret
+    tohash  = "api_key" + self.apiKey + "method" + method + "token" + self.token + secret
     hashobj = hashlib.md5(tohash)
     return hashobj.hexdigest()
 
