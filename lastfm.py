@@ -59,6 +59,7 @@ class session(object):
     # The string that needs to be hashed, as specified by last.fm docs
     tohash  = "api_key" + self.apiKey + "method" + method
     tohash  = tohash + "token" + self.token + secret
+    print tohash
     hashobj = hashlib.md5(tohash)
     return hashobj.hexdigest()
 
@@ -109,14 +110,32 @@ class session(object):
     The get_data method will retrieve the data stored by shelf and set our
     class instance self.session_key to what has been stored. To be used
     after auth() has been run sucessfully at least once
+    Parameters: none
+       Returns: none
     """
     storage          = shelve.open('data')
     self.session_key = storage['0']
     storage.close()
 
+  def scrobble(self, artist, track):
+    """
+    The scrobble method scrobbles a song to last.fm
+    Parameters: a string, name of the artist being scrobbled
+                a string, name of the track being scrobbled
+       Returns: none
+    """
+    root    = "http://ws.audioscrobbler.com/2.0/"
+    sig     = self.get_signature("track.scrobble")
+    payload = {'method': 'track.scrobble', 'artist': artist, 'track': track,
+               'timestamp': int(time.time()), 'api_key': self.apiKey,
+               'api_sig': sig, 'sk': self.session_key}
+    r = requests.post(root, data=payload)
+    print r.text
+
 def test():
   test_session = session()
-  print test_session.session_key
   test_session.get_data()
-  print test_session.session_key
+  test_session.scrobble("M83", "Midnight City")
+
+test()
 
