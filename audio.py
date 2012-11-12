@@ -1,10 +1,11 @@
 ###############################################################################
 #
-# Main function for Record Scrobbler
+# Audio Functions for Record Scrobbler
+# Used to record audio from line in and transcode into mp3 format
 #
 ###############################################################################
 
-import lastfm, pydub, wave, pyaudio, time
+import pydub, wave, pyaudio, time, os
 
 def grab_audio(filename):
   """
@@ -50,4 +51,15 @@ def export_to_mp3(filename, outfile):
   """
   file = pydub.AudioSegment.from_wav(filename)
   file.export(outfile, format='mp3')
+  #clean_up(filename)
+
+def clean_up(filename)
+  """
+  Deletes raw wave files after transcoding to mp3 is complete
+  """
+  # os.remove(./filename)
+
+
+
+
 
