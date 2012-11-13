@@ -33,18 +33,18 @@ class en_session(object):
        Returns: a string, the name of the song
                 a string, the songs artist
     """
-    url     = 'http://developer.echonest.com/api/v4/song/identify?api_key='+self.api_key+ '&code='+code
+    url     = 'http://developer.echonest.com/api/v4/song/identify?api_key='
+    url     = url + self.api_key + '&code=' + code
     r       = requests.get(url)
     json    = r.json
     title   = json['response']['songs'][0]['title']
     artist  = json['response']['songs'][0]['artist_name']
-    print title
-    print artist
+    return title, artist
 
 
 def test():
   test = en_session()
   print "API KEY: ", test.api_key
-  test.identify(test_code2)
+  print test.identify(test_code2)
 
 test()
