@@ -5,7 +5,7 @@
 #
 ###############################################################################
 
-import pydub, wave, pyaudio, time, os
+import pydub, wave, pyaudio, time, os, subprocess
 
 def grab_audio(filename):
   """
@@ -51,15 +51,25 @@ def export_to_mp3(filename, outfile):
   """
   file = pydub.AudioSegment.from_wav(filename)
   file.export(outfile, format='mp3')
-  #clean_up(filename)
+  clean_up(filename)
 
-def clean_up(filename)
+def make_raw(filename, outfile):
+  args = "-i " + filename + " -ac 1 -ar 22050 -f s16le -t 25 - > " + outfile
+  print args
+  os.system('ffmpeg ' + args)
+
+
+def clean_up(filename):
   """
   Deletes raw wave files after transcoding to mp3 is complete
   """
-  # os.remove(./filename)
+  os.remove("./"+filename)
 
-
+def test():
+  grab_audio('test.wav')
+  export_to_mp3('test.wav', 'test.mp3')
+  make_raw('test.mp3', 'test.raw')
+  clean_up('test.mp3')
 
 
 
