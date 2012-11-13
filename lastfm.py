@@ -74,6 +74,8 @@ class session(object):
     Parameters: none
        Returns: none
     """
+    print "We need your permission to continue"
+    print "Opening your default web browser..."
     url = "http://www.last.fm/api/auth/?api_key="
     webbrowser.open(url + self.apiKey + "&token=" + self.token)
     time.sleep(10)
@@ -97,7 +99,6 @@ class session(object):
     json     = response.json
     session_key      = json['session']['key']
     self.session_key = session_key
-    print self.session_key
 
   def save_data(self):
     """
