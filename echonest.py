@@ -34,7 +34,7 @@ class en_session(object):
                 a string, the songs artist
     """
     url     = 'http://developer.echonest.com/api/v4/song/identify?api_key='
-    url     = url + self.api_key + '&code=' + code
+    url     = url + self.api_key + '&version=4.12' + '&code=' + code
     r       = requests.get(url)
     json    = r.json
     #title   = json['response']['songs'][0]['title']

@@ -148,6 +148,7 @@ class session(object):
 
 def test():
   test_session = session()
-  test_session.get_data()
+  test_session.auth()
+  test_session.save_data()
   test_session.scrobble("M83", "Midnight City")
 
