@@ -37,9 +37,9 @@ class en_session(object):
     url     = url + self.api_key + '&code=' + code
     r       = requests.get(url)
     json    = r.json
-    title   = json['response']['songs'][0]['title']
-    artist  = json['response']['songs'][0]['artist_name']
-    return title, artist
+    #title   = json['response']['songs'][0]['title']
+    #artist  = json['response']['songs'][0]['artist_name']
+    return json
 
 
 def test():
@@ -47,4 +47,3 @@ def test():
   print "API KEY: ", test.api_key
   print test.identify(test_code2)
 
-test()
