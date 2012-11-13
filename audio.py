@@ -20,7 +20,7 @@ def grab_audio(filename):
   FORMAT   = pyaudio.paInt16
   CHANNELS = 2
   RATE     = 44100
-  LENGTH   = 30
+  LENGTH   = 22
   OUTPUT   = filename
   record   = pyaudio.PyAudio()
   stream   = record.open(format=FORMAT, channels=CHANNELS, rate=RATE,
@@ -65,8 +65,13 @@ def clean_up(filename):
 
 def test():
   grab_audio('test.wav')
-  export_to_mp3('test.wav', 'test.mp3')
-  make_raw('test.mp3', 'test.raw')
-  clean_up('test.mp3')
+  export_to_raw('test.wav', 'test.raw')
+  #export_to_mp3('test.wav', 'test.mp3')
+  #make_raw('test.mp3', 'test.raw')
+  #clean_up('test.mp3')
+
+def export_to_raw(filename, outfile):
+  args = "-i " + filename + " -f s16le -acodec pcm_s16le " + outfile
+  os.system('ffmpeg ' + args)
 
 
