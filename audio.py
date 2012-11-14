@@ -20,7 +20,7 @@ def grab_audio(filename):
   FORMAT   = pyaudio.paInt16
   CHANNELS = 2
   RATE     = 44100
-  LENGTH   = 22
+  LENGTH   = 21
   OUTPUT   = filename
   record   = pyaudio.PyAudio()
   stream   = record.open(format=FORMAT, channels=CHANNELS, rate=RATE,
