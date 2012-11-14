@@ -1,11 +1,11 @@
 ###############################################################################
 #
 # Audio Functions for Record Scrobbler
-# Used to record audio from line in and transcode into mp3 format
+# Grabs audio from line in, saves it to a wav file
 #
 ###############################################################################
 
-import pydub, wave, pyaudio, time, os, subprocess
+import pydub, wave, pyaudio, os
 
 def grab_audio(filename):
   """
@@ -42,36 +42,10 @@ def grab_audio(filename):
   file.writeframes(b''.join(frames))
   file.close
 
-def export_to_mp3(filename, outfile):
-  """
-  Converts a wave file to mp3, this allows the file to be used with Echo Nest
-  Parameters: a string, the name of the file you wish to convert
-              a string, the name of the output file
-     Returns: none
-  """
-  file = pydub.AudioSegment.from_wav(filename)
-  file.export(outfile, format='mp3')
-  clean_up(filename)
-
-def make_raw(filename, outfile):
-  args = "-i " + filename + " -ac 1 -ar 22050 -f s16le -t 25 - > " + outfile
-  os.system('ffmpeg ' + args)
-
 def clean_up(filename):
   """
-  Deletes raw wave files after transcoding to mp3 is complete
+  Deletes filename
+  Parameters: a string, name of the file you wish to delete
+     Returns: none
   """
   os.remove("./"+filename)
-
-def test():
-  grab_audio('test.wav')
-  export_to_raw('test.wav', 'test.raw')
-  #export_to_mp3('test.wav', 'test.mp3')
-  #make_raw('test.mp3', 'test.raw')
-  #clean_up('test.mp3')
-
-def export_to_raw(filename, outfile):
-  args = "-i " + filename + " -f s16le -acodec pcm_s16le " + outfile
-  os.system('ffmpeg ' + args)
-
-
