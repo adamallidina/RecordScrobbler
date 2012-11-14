@@ -20,15 +20,20 @@ def main():
   while state:
     try:
       # TODO Main application loop
-      #audio.grab_audio('input.wav')
-      out      = check_output(['./echoprint-codegen ' 'out.wav 10 20'], shell=True)
+      audio.grab_audio('input.wav')
+      out      = check_output(['./echoprint-codegen ' 'input.wav 10 20'], shell=True)
       toparse  = ast.literal_eval(out)
       code     = parse(toparse)
       response = identifer.identify(code)
       title    = response['response']['songs'][0]['title']
       artist   = response['response']['songs'][0]['artist_name']
-      #scrobbler.scrobble(artist, title)
+      songid   = response['response']['songs'][0]['id']
+      length   = (identifer.get_length(songid) - 25)
+      scrobbler.scrobble(artist, title)
       print "Scrobbled %s by %s" % (title, artist)
+      print "Sleeping for %d seconds" % length
+      audio.clean_up('input.wav')
+      time.sleep(length)
     except:
       # Errors break the program
       state = False
