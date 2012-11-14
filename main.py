@@ -10,7 +10,7 @@ from subprocess import check_output, check_call
 def main():
   # Make our object instances
   scrobbler = lastfm.session()
-  identifer  = echonest.en_session()
+  identifer = echonest.en_session()
   state     = True
   if scrobbler.dataP():
     scrobbler.get_data()
@@ -20,18 +20,19 @@ def main():
   while state:
     try:
       # TODO Main application loop
-      audio.grab_audio('input.wav')
-      out      = check_output(['./echoprint-codegen ' 'my_test.wav'], shell=True)
+      #audio.grab_audio('input.wav')
+      out      = check_output(['./echoprint-codegen ' 'out.wav 10 20'], shell=True)
       toparse  = ast.literal_eval(out)
       code     = parse(toparse)
-      response = identifier.identify(code)
+      response = identifer.identify(code)
       title    = response['response']['songs'][0]['title']
       artist   = response['response']['songs'][0]['artist_name']
-      scrobbler.scrobble(artist, title)
+      #scrobbler.scrobble(artist, title)
       print "Scrobbled %s by %s" % (title, artist)
     except:
       # Errors break the program
       state = False
+      print "Well, something broke"
 
 def parse(input):
   """
@@ -42,8 +43,9 @@ def parse(input):
   """
   try:
     code = input[0]['code']
+    return code
   except:
-    
+    pass
 
 
 def test():
@@ -58,7 +60,7 @@ def test():
   audio.grab_audio('my_test.wav')
   print "Audio has been grabbed"
   #audio.export_to_raw('my_test.wav', 'my_test.raw')
-  out = check_output(['./echoprint-codegen ' 'my_test.wav'], shell=True)
+  out = check_output(['./echoprint-codegen ' 'my_test.wav 10 20'], shell=True)
   toparse = ast.literal_eval(out)
   code = toparse[0]['code']
   found = song_id.identify(code)
@@ -68,4 +70,4 @@ def test():
   print song_artist
   last_session.scrobble(song_artist, song_title)
 
-test()
+main()
