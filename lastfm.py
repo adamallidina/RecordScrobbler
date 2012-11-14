@@ -126,6 +126,13 @@ class session(object):
     self.session_key = storage['0']
     storage.close()
 
+  def dataP(self):
+    try:
+      with open('data.db') as f:
+        return True
+    except IOError as e:
+      return False
+
   def scrobble(self, artist, track):
     """
     The scrobble method scrobbles a song to last.fm
