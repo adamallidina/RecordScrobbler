@@ -35,7 +35,7 @@ def main():
         artist   = response['response']['songs'][0]['artist_name']
         songid   = response['response']['songs'][0]['id']
         # Subract 25 from length to account for recording and processing time
-        length   = (identifer.get_length(songid) - 25)
+        length   = (identifer.get_length(songid) - 21)
         scrobbler.scrobble(artist, title)
         print "Scrobbled %s by %s" % (title, artist)
         print "Sleeping for %d seconds" % length
