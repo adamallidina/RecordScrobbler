@@ -33,5 +33,17 @@ class en_session(object):
     json    = r.json
     return json
 
+  def get_length(self, songid):
+    """
+    The get_length method returns the length of the song as an int
+    """
+    url      = 'http://developer.echonest.com/api/v4/song/profile?api_key='
+    url      = url + self.api_key + '&format=json' + '&id=' + songid + '&bucket'
+    url      = url + '=audio_summary'
+    response = requests.get(url)
+    json     = response.json
+    return int(json['response']['songs'][0]['audio_summary']['duration'])
+
+
 
 
