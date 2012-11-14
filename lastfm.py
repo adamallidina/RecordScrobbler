@@ -127,6 +127,11 @@ class session(object):
     storage.close()
 
   def dataP(self):
+    """
+    Checks if data.db exists
+    Parameters: none
+       Returns: bool
+    """
     try:
       with open('data.db') as f:
         return True
