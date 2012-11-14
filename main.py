@@ -8,12 +8,43 @@ import lastfm, audio, echonest, time, ast
 from subprocess import check_output, check_call
 
 def main():
+  # Make our object instances
   scrobbler = lastfm.session()
+  identifer  = echonest.en_session()
+  state     = True
   if scrobbler.dataP():
-    # user has already authenticated
     scrobbler.get_data()
-  else
-    # need to authenticate
+  else:
+    scrobbler.auth()
+    scrobbler.save_data()
+  while state:
+    try:
+      # TODO Main application loop
+      audio.grab_audio('input.wav')
+      out      = check_output(['./echoprint-codegen ' 'my_test.wav'], shell=True)
+      toparse  = ast.literal_eval(out)
+      code     = parse(toparse)
+      response = identifier.identify(code)
+      title    = response['response']['songs'][0]['title']
+      artist   = response['response']['songs'][0]['artist_name']
+      scrobbler.scrobble(artist, title)
+      print "Scrobbled %s by %s" % (title, artist)
+    except:
+      # Errors break the program
+      state = False
+
+def parse(input):
+  """
+  Parse will take the string which echoprint-codegen outputs and
+  will parse it for the code
+  Parameters: a string, output from echoprint-codegen
+     Returns: a string, the code from echoprint-codegen
+  """
+  try:
+    code = input[0]['code']
+  except:
+    
+
 
 def test():
   # Start a session with last.fm
