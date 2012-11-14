@@ -109,7 +109,7 @@ class session(object):
     Parameters: none
        Returns: none
     """
-    storage = shelve.open('data')
+    storage = shelve.open('data.db')
     # All we need to store is the session key
     storage['0'] = self.session_key
     storage.close()
@@ -122,7 +122,7 @@ class session(object):
     Parameters: none
        Returns: none
     """
-    storage          = shelve.open('data')
+    storage          = shelve.open('data.db')
     self.session_key = storage['0']
     storage.close()
 
