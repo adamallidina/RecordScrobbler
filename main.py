@@ -21,7 +21,7 @@ def main():
     try:
       # TODO Main application loop
       audio.grab_audio('input.wav')
-      out      = check_output(['./echoprint-codegen ' 'input.wav 10 20'], shell=True)
+      out      = check_output(['./echoprint-codegen ' 'input.wav'], shell=True)
       toparse  = ast.literal_eval(out)
       code     = parse(toparse)
       response = identifer.identify(code)
