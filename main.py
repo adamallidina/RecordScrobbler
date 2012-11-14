@@ -25,15 +25,22 @@ def main():
       toparse  = ast.literal_eval(out)
       code     = parse(toparse)
       response = identifer.identify(code)
-      title    = response['response']['songs'][0]['title']
-      artist   = response['response']['songs'][0]['artist_name']
-      songid   = response['response']['songs'][0]['id']
-      length   = (identifer.get_length(songid) - 25)
-      scrobbler.scrobble(artist, title)
-      print "Scrobbled %s by %s" % (title, artist)
-      print "Sleeping for %d seconds" % length
-      audio.clean_up('input.wav')
-      time.sleep(length)
+      content  = response['response']['songs']
+      if content == []:
+        #STUFF
+        print "Empty response, track not scrobbled"
+        time.sleep(60)
+      else:
+        title    = response['response']['songs'][0]['title']
+        artist   = response['response']['songs'][0]['artist_name']
+        songid   = response['response']['songs'][0]['id']
+        # Subract 25 from length to account for recording and processing time
+        length   = (identifer.get_length(songid) - 25)
+        scrobbler.scrobble(artist, title)
+        print "Scrobbled %s by %s" % (title, artist)
+        print "Sleeping for %d seconds" % length
+        audio.clean_up('input.wav')
+        time.sleep(length)
     except:
       # Errors break the program
       state = False
