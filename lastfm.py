@@ -1,7 +1,7 @@
 ###############################################################################
 #
 # LastFM Module for RecordScrobbler
-# // todo description
+# Used for scrobbling identified tracks to last.fm
 #
 ###############################################################################
 
@@ -9,7 +9,6 @@ import requests, webbrowser, hashlib, time, shelve
 from ConfigParser import SafeConfigParser
 
 class session(object):
-
   """
   An instance of a session object represents all facilities needed in order for
   the program to scrobble music to last.fm via their api
@@ -54,14 +53,16 @@ class session(object):
     parser  = SafeConfigParser()
     parser.read('config.txt')
     secret  = parser.get('secret', 'key')
-    # Produce string that needs to be hashed, as specified by last.fm docs
-    # That is, we need to alphabetize all the string parameters first
+    # We need to produce the string which needs to be hashed
+    # The string must be an alphabetized version of the request will be sending
+    # to the last.fm api
     list = tosort.items()
     list.sort()
     tohash = ""
     while list != []:
       tup    = list.pop(0)
       tohash = tohash + tup[0] + tup[1]
+    # Now we hash the string
     tohash  = tohash + secret
     hashobj = hashlib.md5(tohash)
     return hashobj.hexdigest()
@@ -89,6 +90,7 @@ class session(object):
        Returns: none
     """
     self.web_auth()
+    # Get the signature of our request for auth.getSession
     sig_dict = {'api_key': self.apiKey, 'method': 'auth.getSession', 'token': self.token}
     signature = self.get_signature(sig_dict)
     # Now we need to grab a session key
@@ -144,11 +146,4 @@ class session(object):
                 'timestamp': timestamp, 'api_key': self.apiKey,
                 'api_sig': sig, 'sk': self.session_key}
     # Away we go!
-    r = requests.post(root, data=payload)
-
-def test():
-  test_session = session()
-  test_session.auth()
-  test_session.save_data()
-  test_session.scrobble("M83", "Midnight City")
-
+    requests.post(root, data=payload)
