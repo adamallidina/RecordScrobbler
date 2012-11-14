@@ -7,7 +7,13 @@
 import lastfm, audio, echonest, time, ast
 from subprocess import check_output, check_call
 
-# FFMPEG Conversion: test.mp3 -ac 1 -ar 22050 -f s16le -t 20 -ss 10 -> test.raw
+def main():
+  scrobbler = lastfm.session()
+  if scrobbler.dataP():
+    # user has already authenticated
+    scrobbler.get_data()
+  else
+    # need to authenticate
 
 def test():
   # Start a session with last.fm
@@ -30,11 +36,5 @@ def test():
   print song_title
   print song_artist
   last_session.scrobble(song_artist, song_title)
-
-def test2():
-  song_id = echonest.en_session()
-  code = check_output(['./TEST ' 'billie.raw'], shell=True)
-  found = song_id.identify(code)
-  print found
 
 test()
