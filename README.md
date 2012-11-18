@@ -22,9 +22,8 @@ Steps to run your own instance
     secret = your_last_fm_secret_key 
 
     [echonest] 
-    api_key = your_echonest_api_key 
+    api_key = your_echonest_api_key ```
 
-```
 * Now just: python main.py
 
 Feel free to contact me at adam(dot)allidina(at)gmail(dot)com with any questions or comments
