@@ -19,10 +19,20 @@ class session(object):
     The __init__ method sets all required variables for authentication and
     requests to the last.fm api
     """
-    self.apiKey      = "021ab74b3f5405138a23c42b8ff1c746"
+    self.apiKey      = self.get_apikey()
     self.predicate   = "http://ws.audioscrobbler.com/2.0/?method="
     self.token       = self.get_token()
     self.session_key = None
+
+  def get_apikey(self):
+    """
+    Parameters: none
+       Returns: a string containing the last.fm api key found in config.txt
+    """
+    parser  = SafeConfigParser()
+    parser.read('config.txt')
+    api_key = parser.get('lastfm', 'api_key')
+    return api_key
 
   def get_token(self):
     """
@@ -52,7 +62,7 @@ class session(object):
     # Get secret key from config file
     parser  = SafeConfigParser()
     parser.read('config.txt')
-    secret  = parser.get('secret', 'key')
+    secret  = parser.get('lastfm', 'secret')
     # We need to produce the string which needs to be hashed
     # The string must be an alphabetized version of the request will be sending
     # to the last.fm api
