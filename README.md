@@ -17,7 +17,6 @@ Steps to run your own instance
 * Build echoprint-codegen, make sure that the file RecordScrobbler/echoprint-codegen exists
 * Create a file RecordScrobbler/config.txt which should contain:
 ```
-
     [lastfm] 
     api_key = your_last_fm_api_key 
     secret = your_last_fm_secret_key 
@@ -26,6 +25,6 @@ Steps to run your own instance
     api_key = your_echonest_api_key 
 
 ```
-* Now just: ```python main.py```
+* Now just: python main.py
 
 Feel free to contact me at adam(dot)allidina(at)gmail(dot)com with any questions or comments
